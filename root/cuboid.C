@@ -1,6 +1,6 @@
 void cuboid(int nBins=20)
 {
-  TString inputFile = TString("cuboidData.dat");
+  TString inputFile = TString("../data/cuboidDataS2015.dat");
 
   // Now open our input
   printf(" Input file: %s\n",inputFile.Data());
