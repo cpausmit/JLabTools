@@ -4,8 +4,8 @@ Some tools to perform data analysis. Some examples of data are also stored
 
 ## Examples
 
-cd JLabTools/root/
-root -l ./cubiod.C+
+  cd JLabTools/root/
+  root -l ./cubiod.C+
 
 ## Requirements
 
