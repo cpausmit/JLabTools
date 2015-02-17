@@ -86,6 +86,7 @@ void snowFall(int nBins = 24)
   latex.DrawLatex(92.5,8.8,"How Likely?  G: 2.44 std, A: 2 of 120");
 
   latex.SetTextAlign(32);
+  latex.SetTextColor(kBlack);
   latex.SetTextSize(0.034);
   latex.DrawLatex(118,20.,"Average: 43.7''");
   latex.DrawLatex(118,18.,"Mean (G): 41.8''");
@@ -94,5 +95,7 @@ void snowFall(int nBins = 24)
   latex.SetTextColor(kRed);
   latex.DrawLatex(118,15.8,"Fit Prob. (G): 72%");
 
+  cv->SaveAs("snowFallBoston.png");
+  
   return;
 }
