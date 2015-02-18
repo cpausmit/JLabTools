@@ -3,6 +3,7 @@
 #include <TFile.h>
 #include <TCanvas.h>
 #include <TH1D.h>
+#include <TF1.h>
 #include <TArrow.h>
 #include <TLatex.h>
 
@@ -72,6 +73,13 @@ void snowFall(int nBins = 24)
   hSnowFall->SetLineColor(kBlack);
   hSnowFall->Fit("gaus","L");
 
+  TF1 *gaussian = hSnowFall->GetFunction("gaus");
+  gaussian->SetLineColor(kRed);
+  gaussian->Draw("same");
+  
+  Double_t p = gaussian->Integral(92.6,1000.)/gaussian->Integral(-1000.,1000.);
+  cout << " Probability: " << p << endl;
+  
   TArrow* arrow = new TArrow(92.5,0.1,92.5,8.,0.03,"<|");
   arrow->SetAngle(40);
   arrow->SetLineWidth(2);
@@ -83,7 +91,7 @@ void snowFall(int nBins = 24)
   latex.DrawLatex(92.5,9.5,"2014/15 (Feb. 17)");
   latex.SetTextColor(kRed);
   latex.SetTextSize(0.020);
-  latex.DrawLatex(92.5,8.8,"How Likely?  G: 2.44 std, A: 2 of 120");
+  latex.DrawLatex(92.5,8.8,"How Likely?  G: 2.44 std, A: 2 of 122");
 
   latex.SetTextAlign(32);
   latex.SetTextColor(kBlack);
