@@ -1,8 +1,3 @@
-// Random generator available as global
-TRandom *gRandom = 0;
-
-Int_t measure(Double_t rate, Double_t interval);
-
 //--------------------------------------------------------------------------------------------------
 // This function simulates a classical counting experiment, where you have a radioactive source that
 // has a very large number of potentially decaying atoms and a very long half-life.  Typical would
@@ -15,13 +10,19 @@ Int_t measure(Double_t rate, Double_t interval);
 // things to study here is to see how many experiments you need to perfrom to show a significant
 // deviation from Gaussian behavior. Quite a lot actually!
 // --------------------------------------------------------------------------------------------------
+#include <TRandom.h>
+#include <TCanvas.h>
+#include <TH1D.h>
+
+// Random generator available as global
+TRandom *gRandom = 0;
+
+Int_t measure(Double_t rate, Double_t interval);
 
 void countingExperiment(Int_t    seed     = 456456,
 			Int_t    nDraws   = 10000,
 		        Double_t rate     = 1,
 		        Double_t interval = 1,
-			Double_t mean     = 3400,
-			Double_t width    = 150,
 			Double_t nBins    = 100)
 {
   // frame work where we setup the experiment and run in the measuring loop
@@ -38,7 +39,7 @@ void countingExperiment(Int_t    seed     = 456456,
 
   // generate
   for (Int_t i=0; i<nDraws; i++) {
-    nDecays = measure(rate,interval);
+    Int_t nDecays = measure(rate,interval);
     hCounts->Fill(nDecays);
   }
 

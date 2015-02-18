@@ -1,16 +1,3 @@
-#include <TRandom.h>
-#include <TCanvas.h>
-#include <TH1D.h>
-
-//#include <MitRootStyle.C>
-
-// Random generator available as global
-TRandom *gRandom = 0;
-
-void  setupRandom(Int_t seed);
-Int_t measureNDecays(Double_t rate, Double_t interval);
-void  fillDecayTimes(const Int_t nDecays, Double_t decayTimes[]);
-
 //--------------------------------------------------------------------------------------------------
 // This function simulates a classical counting experiment, where you have a radioactive source that
 // has a very large number of potentially decaying atoms and a very long half-life.  Typical would
@@ -25,11 +12,22 @@ void  fillDecayTimes(const Int_t nDecays, Double_t decayTimes[]);
 // differences between two events to derive from the plot the meaning of average time difference
 // between events and the most likely difference (median).
 // --------------------------------------------------------------------------------------------------
+#include <TRandom.h>
+#include <TCanvas.h>
+#include <TH1D.h>
+//#include <MitRootStyle.C>
 
-void generateTimeSeries(Int_t    seed     = 46456,
-		        Double_t rate     = 10,
-		        Double_t interval = 1000,
-			Double_t nBins    = 100)
+// Random generator available as global
+TRandom *gRandom = 0;
+
+void  setupRandom(Int_t seed);
+Int_t measureNDecays(Double_t rate, Double_t interval);
+void  fillDecayTimes(const Int_t nDecays, Double_t decayTimes[]);
+
+void  generateTimeSeries(Int_t    seed     = 46456,
+			 Double_t rate     = 10,
+			 Double_t interval = 1000,
+			 Double_t nBins    = 100)
 {
   // frame work where we setup the experiment and run in the measuring loop
 
