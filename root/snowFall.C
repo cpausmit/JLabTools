@@ -77,10 +77,10 @@ void snowFall(int nBins = 24)
   gaussian->SetLineColor(kRed);
   gaussian->Draw("same");
   
-  Double_t p = gaussian->Integral(92.6,1000.)/gaussian->Integral(-1000.,1000.);
+  Double_t p = gaussian->Integral(100.0,1000.)/gaussian->Integral(-1000.,1000.);
   cout << " Probability: " << p << endl;
   
-  TArrow* arrow = new TArrow(92.5,0.1,92.5,8.,0.03,"<|");
+  TArrow* arrow = new TArrow(100.0,0.1,100.0,8.,0.03,"<|");
   arrow->SetAngle(40);
   arrow->SetLineWidth(2);
   arrow->Draw();
@@ -88,10 +88,10 @@ void snowFall(int nBins = 24)
   TLatex latex;
   latex.SetTextSize(0.034);
   latex.SetTextAlign(22);
-  latex.DrawLatex(92.5,9.5,"2014/15 (Feb. 17)");
+  latex.DrawLatex(100.0,9.5,"2014/15 (Feb. 17)");
   latex.SetTextColor(kRed);
   latex.SetTextSize(0.020);
-  latex.DrawLatex(92.5,8.8,"How Likely?  G: 2.44 std, A: 2 of 122");
+  latex.DrawLatex(100.0,8.8,"How Likely?  G: 2.44 std, A: 2 of 122");
 
   latex.SetTextAlign(32);
   latex.SetTextColor(kBlack);

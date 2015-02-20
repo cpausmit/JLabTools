@@ -15,7 +15,8 @@
 #include <TRandom.h>
 #include <TCanvas.h>
 #include <TH1D.h>
-//#include <MitRootStyle.C>
+
+#include <MitRootStyle.C>
 
 // Random generator available as global
 TRandom *gRandom = 0;
@@ -41,9 +42,14 @@ void  generateTimeSeries(Int_t    seed     = 46456,
   Double_t decayTimes[nObserved];
   fillDecayTimes(nObserved,decayTimes);
   
+  // Make sure we have the right styles
+  MitRootStyle::Init(-1);
+
   // analyze the time series (it is ordered already)
-  TH1D *hTimes  = new TH1D("DecayT",";Number of Counts;Time [sec]",nBins,0.,interval);
+  TH1D *hTimes  = new TH1D("DecayT",";Number of Counts;",nBins,0.,interval);
+  MitRootStyle::InitHist(hTimes,"Time [sec]","Number of Counts",kBlack);  
   TH1D *hDeltaT = new TH1D("DeltaT",";Number of Entries;Delta Time [sec]",nBins,0.,5.0*(1.0/rate));
+  MitRootStyle::InitHist(hDeltaT,"Delta Time [sec]","Number of Counts",kBlack);  
 
   // generate
   Double_t lastTime = 0.;
@@ -65,12 +71,21 @@ void  generateTimeSeries(Int_t    seed     = 46456,
   
   printf(" Total time is: %f\n",tTotal);
   printf(" Rate is      : %f\n",nObserved/interval);
-  
-  // draw the plot
-  TCanvas *cv = new TCanvas();
-  cv->Draw();
-  //hTimes->Draw("e");
-  hDeltaT->Draw("e");
+
+  // Make the plot
+  TCanvas *cv = new TCanvas("cv","multipads",800,400);
+  cv->Divide(2,1,0,0);
+  cv->cd(1);
+  MitRootStyle::InitSubPad(gPad);
+  hTimes->SetMarkerColor(kBlue);
+  hTimes->SetMarkerSize(0.6);
+  hTimes->Draw("e");
+  hTimes->Fit("pol1");
+  cv->cd(2);
+  MitRootStyle::InitSubPad(gPad);
+  hDeltaT->SetMarkerColor(kBlue);
+  hDeltaT->SetMarkerSize(0.6);
+  hDeltaT->Draw("e");  
   hDeltaT->Fit("expo");
 
   // cleanup
