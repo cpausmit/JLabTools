@@ -30,7 +30,7 @@ void  generateTimeSeries(Int_t    seed     = 46456,
 			 Double_t interval = 1000,
 			 Double_t nBins    = 100)
 {
-  // frame work where we setup the experiment and run in the measuring loop
+  // framework where we setup the experiment and run in the measuring loop
 
   // make sure to initialize the random number generator
   setupRandom(seed);
@@ -67,8 +67,8 @@ void  generateTimeSeries(Int_t    seed     = 46456,
     // make sure to update the lastTime
     lastTime = decayTimes[i];
   }
-  
-  
+ 
+  // Sanity checks
   printf(" Total time is: %f\n",tTotal);
   printf(" Rate is      : %f\n",nObserved/interval);
 
@@ -95,7 +95,8 @@ void  generateTimeSeries(Int_t    seed     = 46456,
 
 void setupRandom(Int_t seed)
 {
-  // initialize the random generator
+  // Initialize the random generator.
+
   if (gRandom)
     delete gRandom;
   gRandom = new TRandom(seed);
@@ -114,21 +115,21 @@ Int_t measureNDecays(Double_t rate, Double_t interval)
 
 void fillDecayTimes(const Int_t nDecays, Double_t decayTimes[])
 {
+  // For a given number of decays generate the corresponding times assuming a flat distribution. The
+  // time interval is normalized to one, so all values are between 0 and 1.
+
   printf(" Generate %d times\n",nDecays);
   
   Double_t x[nDecays];
-  for (Int_t i=0; i<nDecays; i++) {
+  for (Int_t i=0; i<nDecays; i++)
     x[i] = gRandom->Uniform();
-    //printf(" Next Time: %f\n",x[i]);
-  }
   
-  // allright, sorting it by hand
+  // allright, sorting it by hand (elegant/efficient is different)
   // Int_t    idxLast =   -1;
   Double_t lowest  =  1.1;
   Double_t last    = -0.1;
   
   for (Int_t i=0; i<nDecays; i++) { 
-
     // search next lowest time (exactly equal values are not handled correctly)
     lowest = 1.1;             // reset our lowest to high value
     for (Int_t j=0; j<nDecays; j++) {
@@ -137,11 +138,8 @@ void fillDecayTimes(const Int_t nDecays, Double_t decayTimes[])
 	lowest  = x[j];
       }
     }
-
     // store this time
     decayTimes[i] = lowest;
-    //printf(" Ordered Times: %f  (%d)\n",lowest,idxLast);
-
     // remember how far we got
     last = lowest;
   }

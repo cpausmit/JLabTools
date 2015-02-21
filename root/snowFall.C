@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void snowFall(int nBins = 24)
+void snowFall(Double_t snow2015 = 100., Int_t nBins = 24)
 {
   TString inputFile = TString("../data/snowFall.dat");
 
@@ -36,6 +36,8 @@ void snowFall(int nBins = 24)
   input >> name >> s >> s >> s >> s >> s >> s >> s >> s >> s >> s >> s >> s >> s;
 
   // Loop through data section of the file
+  Int_t    nYears = 0;
+  Double_t fTotSum = 0.;
   while (1) {
 
     // read in
@@ -53,16 +55,22 @@ void snowFall(int nBins = 24)
 
     // check it worked
     if (! input.good()) {
-      cout << name << " ERROR in reading!" << endl;
+      //cout << name << " ERROR in reading!" << endl;
       break;
     }
       
+    // keep track of the total sum
+    fTotSum += fTot;
+    nYears++;
+    
     hSnowFall->Fill(fTot);
 
     nLines++;
   }
   input.close();
 
+  // Start the plotting
+  
   // Make sure we have the right styles
   MitRootStyle::Init(-1);
   
@@ -77,10 +85,14 @@ void snowFall(int nBins = 24)
   gaussian->SetLineColor(kRed);
   gaussian->Draw("same");
   
-  Double_t p = gaussian->Integral(100.0,1000.)/gaussian->Integral(-1000.,1000.);
+  // Calculate probabilities
+  Double_t p = gaussian->Integral(snow2015,1000.)/gaussian->Integral(-1000.,1000.);
   cout << " Probability: " << p << endl;
+
+  char text[120];
+
   
-  TArrow* arrow = new TArrow(100.0,0.1,100.0,8.,0.03,"<|");
+  TArrow* arrow = new TArrow(snow2015,0.1,snow2015,8.,0.03,"<|");
   arrow->SetAngle(40);
   arrow->SetLineWidth(2);
   arrow->Draw();
@@ -88,17 +100,23 @@ void snowFall(int nBins = 24)
   TLatex latex;
   latex.SetTextSize(0.034);
   latex.SetTextAlign(22);
-  latex.DrawLatex(100.0,9.5,"2014/15 (Feb. 17)");
+  latex.DrawLatex(snow2015,9.5,"2014/15 (Feb. 20)");
+
   latex.SetTextColor(kRed);
   latex.SetTextSize(0.020);
-  latex.DrawLatex(100.0,8.8,"How Likely?  G: 2.44 std, A: 2 of 122");
+  sprintf(text," Likely? p=%.2f%%; #sigma=%.2f",100.*p,
+	  fabs(snow2015-gaussian->GetParameter(1))/gaussian->GetParameter(2));
+  latex.DrawLatex(snow2015,8.8,text);
 
   latex.SetTextAlign(32);
   latex.SetTextColor(kBlack);
   latex.SetTextSize(0.034);
-  latex.DrawLatex(118,20.,"Average: 43.7''");
-  latex.DrawLatex(118,18.,"Mean (G): 41.8''");
-  latex.DrawLatex(118,17.,"Width (G): 20.8''");
+  sprintf(text," Average: %.1f''",fTotSum/max(nYears,1));
+  latex.DrawLatex(118,20.,text);
+  sprintf(text," Mean: %.1f''",gaussian->GetParameter(1));
+  latex.DrawLatex(118,18.,text);
+  sprintf(text," Width: %.1f''",gaussian->GetParameter(2));
+  latex.DrawLatex(118,17.,text);
 
   latex.SetTextColor(kRed);
   latex.DrawLatex(118,15.8,"Fit Prob. (G): 72%");
