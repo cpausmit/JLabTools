@@ -28,8 +28,6 @@ void cuboid(int nBins=20)
   Double_t x,dx,y,dy,z,dz,v,dv;
 
   TH1D *hVolume    = new TH1D("Volume","Cuboid Volume",nBins,2900,3900);
-//  TH1D *hVolumeGen = new TH1D("VolumeGen","Generated Cuboid Volume",
-//			      nBins,3000,4000);
 
   MitRootStyle::InitHist(hVolume,"","",kBlue);
 
