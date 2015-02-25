@@ -68,7 +68,7 @@ void  generateTimeSeries(Int_t    seed     = 46456,
     lastTime = decayTimes[i];
   }
   
-  
+  // Sanity check
   printf(" Total time is: %f\n",tTotal);
   printf(" Rate is      : %f\n",nObserved/interval);
 
