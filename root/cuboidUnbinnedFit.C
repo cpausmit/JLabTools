@@ -45,9 +45,19 @@ void cuboidUnbinnedFit(int nBins=20)
   minuit->mnexcm("HESSE",  argList,1,iFlag);
   minuit->mnexcm("MINOS",  argList,1,iFlag);
   
+
   // Make sure we have the right styles
   MitRootStyle::Init(-1);
-//
+
+  // Display our result as god as we can
+  TH1D *hVolume    = new TH1D("Volume","Cuboid Volume",nBins,2900,3900);
+
+  MitRootStyle::InitHist(hVolume,"","",kBlue);
+
+  TString titles = TString("; Volume [mm^{3}]") + TString("; Number of Entries");
+  hVolume->SetTitle(titles.Data());
+  hVolume->SetMarkerSize(1.4);
+  
 //  TCanvas *cv = new TCanvas();
 //  cv->Draw();
 //  hVolume->Draw("e");
@@ -125,12 +135,12 @@ void Init(TString inputFile)
 void fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag)
 {
   // Calculate the quantity to minimize: chi^2 - or the equivalent 2*log(Prod P)
-
+  
   Double_t sumLogP = 0.;
   const Double_t iSqrtTwoPi = 1.0/TMath::Sqrt(TMath::TwoPi());
   Double_t mean = par[0];
   
-  for (Int_t i=0; i<vVolume.size(); i++) {
+  for (UInt_t i=0; i<vVolume.size(); i++) {
     Double_t sigma = uVolume.at(i);
     Double_t x = vVolume.at(i);
     Double_t arg = log(iSqrtTwoPi/sigma) - 1.0*(x-mean)*(x-mean)/(2*sigma*sigma);
@@ -138,6 +148,10 @@ void fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag)
     sumLogP += arg;
   }
   
-  printf(" fcn -- value: %f\n",-2.0 * sumLogP);
+  //printf(" fcn -- value: %f\n",-2.0 * sumLogP);
   f = -2.0 * sumLogP;
+
+  // Use variables not used to make the compiler happy
+  if (nPar < 0)
+    printf(" fcn -- ERROR -- %f %d",gIn[0],iFlag);
 }
