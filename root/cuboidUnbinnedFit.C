@@ -18,8 +18,10 @@ using namespace std;
 std::vector<double> vVolume; // value of volumes
 std::vector<double> uVolume; // uncertainties of volumes
 
-extern void fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag);
-void Init(TString inputFile);
+extern void Fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag);
+void        Init(TString inputFile);
+void        FillOneMeasurement(TH1D *h, Double_t mean, Double_t sigma);
+Double_t    CalculateWeightedMean(Bool_t lWidth = kFALSE);
 
 void cuboidUnbinnedFit(int nBins=20)
 {
@@ -30,7 +32,7 @@ void cuboidUnbinnedFit(int nBins=20)
   Init(inputFile);
   
   TMinuit *minuit = new TMinuit(1);
-  minuit->SetFCN(fcn);
+  minuit->SetFCN(Fcn);
 
   Int_t    iFlag;
   Double_t argList[10];
@@ -57,11 +59,39 @@ void cuboidUnbinnedFit(int nBins=20)
   TString titles = TString("; Volume [mm^{3}]") + TString("; Number of Entries");
   hVolume->SetTitle(titles.Data());
   hVolume->SetMarkerSize(1.4);
+
+  // Fill the histogram
+  for (UInt_t i=0; i<vVolume.size(); i++) {
+    Double_t sigma = uVolume.at(i);
+    Double_t mean = vVolume.at(i);
+    FillOneMeasurement(hVolume,mean,sigma);
+  }
   
-//  TCanvas *cv = new TCanvas();
-//  cv->Draw();
-//  hVolume->Draw("e");
-//  hVolume->Fit("gaus","l");
+  Double_t mean=CalculateWeightedMean(kFALSE),meanE;
+  //minuit->GetParameter(0,mean,meanE);
+  Double_t sigma=CalculateWeightedMean(kTRUE),sigmaE;
+  //minuit->GetParameter(0,sigma,sigmaE);
+  Double_t norm = double(vVolume.size()) * hVolume->GetBinWidth(0);
+
+  printf(" Normalization:  %f\n",norm);
+  printf(" Weighted Mean:  %f\n",mean);
+  printf(" Weighted Width: %f\n",sigma);
+  
+  TCanvas *cv = new TCanvas();
+  cv->Draw();
+  hVolume->Draw("p");
+
+  TF1 *f = new TF1("f",
+		   "[2]/TMath::Sqrt(TMath::TwoPi())/[1]*TMath::Exp((x-[0])*(x-[0])/(-2*[1]*[1]))",
+		   2000,5000);
+  // Initialize function
+  f->SetParameter(0,mean);
+  f->SetParameter(1,sigma);
+  f->SetParameter(2,norm);
+  f->SetLineColor(kRed);
+  f->Draw("same");
+  
+  //  hVolume->Fit("gaus","l");
 //
 //  TF1 *gaussian = hVolume->GetFunction("gaus");
 //  gaussian->SetLineColor(kRed);
@@ -114,13 +144,18 @@ void Init(TString inputFile)
     // error
     if (dv <= 0)
       printf(" Init -- ERROR -- dv=%8f\n",dv);
-    
+     
     // check it worked
     if (! input.good())
       break;
 
     if (z<34) {
-      printf(" Init -- Rejected measurement (z): %f\n",z);
+      printf(" Init -- Rejected measurement z=%8f\n",z);
+      continue;
+    }
+
+    if (dv <= 80) {
+      printf(" Init -- Rejected measurement v=%8f  dv=%8f\n",v,dv);
       continue;
     }
 
@@ -132,7 +167,7 @@ void Init(TString inputFile)
   input.close();
 }  
 
-void fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag)
+void Fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag)
 {
   // Calculate the quantity to minimize: chi^2 - or the equivalent 2*log(Prod P)
   
@@ -154,4 +189,43 @@ void fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag)
   // Use variables not used to make the compiler happy
   if (nPar < 0)
     printf(" fcn -- ERROR -- %f %d",gIn[0],iFlag);
+}
+
+void FillOneMeasurement(TH1D *h, Double_t mean, Double_t sigma)
+{
+  // Fill the Gaussian PDF into the given histogram
+  
+  TF1 *f = new TF1("f",
+		   "1.0/TMath::Sqrt(TMath::TwoPi())/[1]*TMath::Exp((x-[0])*(x-[0])/(-2*[1]*[1]))",
+		   2000,5000);
+  // Initialize function
+  f->SetParameter(0,mean);
+  f->SetParameter(1,sigma);
+  
+  
+  for (Int_t i=0; i<=h->GetNbinsX(); i++) {
+    Double_t x   = h->GetBinCenter(i);
+    Double_t in  = f->Integral(h->GetBinLowEdge(i), h->GetBinLowEdge(i)+h->GetBinWidth(i));
+    //printf(" x,in: %f %f\n",x,in);
+    h->Fill(x,in);
+  }
+}
+
+Double_t CalculateWeightedMean(Bool_t lWidth)
+{
+  // Calculate a weighted mean value
+  
+  Double_t mean = 0.;
+  Double_t weightSum = 0;
+  
+  // Fill the histogram
+  for (UInt_t i=0; i<vVolume.size(); i++) {
+    Double_t weight = 1.0/(uVolume.at(i)*uVolume.at(i));
+    Double_t value = vVolume.at(i);
+    if (lWidth)
+      value = uVolume.at(i);
+    mean += weight * value;
+    weightSum += weight;
+  }
+  return mean/weightSum;
 }
