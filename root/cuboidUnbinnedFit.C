@@ -223,9 +223,13 @@ Double_t CalculateWeightedMean(Bool_t lWidth)
     Double_t weight = 1.0/(uVolume.at(i)*uVolume.at(i));
     Double_t value = vVolume.at(i);
     if (lWidth)
-      value = uVolume.at(i);
+      value = uVolume.at(i)*uVolume.at(i);
     mean += weight * value;
     weightSum += weight;
   }
-  return mean/weightSum;
+
+  if (lWidth)
+    return sqrt(mean/weightSum);
+  else
+    return mean/weightSum;
 }
