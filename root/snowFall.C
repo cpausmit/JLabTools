@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void snowFall(Double_t snow2015 = 102., Int_t nBins = 24)
+void snowFall(Double_t snow2015 = 105.7, Int_t nBins = 24)
 {
   TString inputFile = TString("../data/snowFall.dat");
 
