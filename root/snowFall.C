@@ -77,12 +77,13 @@ void snowFall(Double_t snow2015 = 108.6, Int_t nBins = 24)
   TCanvas *cv = new TCanvas();
   cv->Draw();
   
-  hSnowFall->Draw("e");
+  hSnowFall->Draw("ep");
   hSnowFall->SetLineColor(kBlack);
   hSnowFall->Fit("gaus","L");
 
   TF1 *gaussian = hSnowFall->GetFunction("gaus");
   gaussian->SetLineColor(kRed);
+  hSnowFall->Draw("ep");
   gaussian->Draw("same");
   
   // Calculate probabilities
@@ -119,7 +120,8 @@ void snowFall(Double_t snow2015 = 108.6, Int_t nBins = 24)
   latex.DrawLatex(118,17.,text);
 
   latex.SetTextColor(kRed);
-  latex.DrawLatex(118,15.8,"Fit Prob. (G): 72%");
+  sprintf(text,"Fit Prob. (G): %.0f%%",100.*gaussian->GetProb());
+  latex.DrawLatex(118,15.8,text);
 
   latex.SetTextColor(kRed);
   latex.SetTextSize(0.06);
