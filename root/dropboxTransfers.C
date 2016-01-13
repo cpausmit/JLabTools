@@ -119,47 +119,8 @@ void dropboxTransfers(Int_t nBins = 24)
 
   //graph->Draw(); 
   graph->Draw("LP"); 
-  
-//  // Calculate probabilities
-//  Double_t p = gaussian->Integral(snow2015,1000.)/gaussian->Integral(-1000.,1000.);
-//  cout << " Probability: " << p << endl;
-//
-//  char text[120];
-//
-//  
-//  TArrow* arrow = new TArrow(snow2015,0.1,snow2015,8.,0.03,"<|");
-//  arrow->SetAngle(40);
-//  arrow->SetLineWidth(2);
-//  arrow->Draw();
-//
-//  TLatex latex;
-//  latex.SetTextSize(0.034);
-//  latex.SetTextAlign(32);
-//  latex.DrawLatex(118,9.5,"2014/15 (Mar. 16)");
-//
-//  latex.SetTextColor(kRed);
-//  latex.SetTextSize(0.020);
-//  sprintf(text," Likely? p=%.2f%%; #sigma=%.2f",100.*p,
-//	  fabs(snow2015-gaussian->GetParameter(1))/gaussian->GetParameter(2));
-//  latex.DrawLatex(118,8.8,text);
-//
-//  latex.SetTextAlign(32);
-//  latex.SetTextColor(kBlack);
-//  latex.SetTextSize(0.034);
-//  sprintf(text," Average: %.1f''",fTotSum/max(nYears,1));
-//  latex.DrawLatex(118,20.,text);
-//  sprintf(text," Mean: %.1f''",gaussian->GetParameter(1));
-//  latex.DrawLatex(118,18.,text);
-//  sprintf(text," Width: %.1f''",gaussian->GetParameter(2));
-//  latex.DrawLatex(118,17.,text);
-//
-//  latex.SetTextColor(kRed);
-//  latex.DrawLatex(118,15.8,"Fit Prob. (G): 72%");
-//
-//  latex.SetTextColor(kRed);
-//  latex.SetTextSize(0.06);
-//  latex.DrawLatex(110,13,"RECORD !");
 
+  // make a png file to save this plot
   cv->SaveAs("rate.png");
   
   return;
