@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void snowFall(Double_t snow2015 = 102., Int_t nBins = 24)
+void snowFall(Double_t snow2015 = 108.6, Int_t nBins = 24)
 {
   TString inputFile = TString("../data/snowFall.dat");
 
@@ -77,12 +77,13 @@ void snowFall(Double_t snow2015 = 102., Int_t nBins = 24)
   TCanvas *cv = new TCanvas();
   cv->Draw();
   
-  hSnowFall->Draw("e");
+  hSnowFall->Draw("ep");
   hSnowFall->SetLineColor(kBlack);
   hSnowFall->Fit("gaus","L");
 
   TF1 *gaussian = hSnowFall->GetFunction("gaus");
   gaussian->SetLineColor(kRed);
+  hSnowFall->Draw("ep");
   gaussian->Draw("same");
   
   // Calculate probabilities
@@ -99,14 +100,14 @@ void snowFall(Double_t snow2015 = 102., Int_t nBins = 24)
 
   TLatex latex;
   latex.SetTextSize(0.034);
-  latex.SetTextAlign(22);
-  latex.DrawLatex(snow2015,9.5,"2014/15 (Feb. 20)");
+  latex.SetTextAlign(32);
+  latex.DrawLatex(118,9.5,"2014/15 (Mar. 16)");
 
   latex.SetTextColor(kRed);
   latex.SetTextSize(0.020);
   sprintf(text," Likely? p=%.2f%%; #sigma=%.2f",100.*p,
 	  fabs(snow2015-gaussian->GetParameter(1))/gaussian->GetParameter(2));
-  latex.DrawLatex(snow2015,8.8,text);
+  latex.DrawLatex(118,8.8,text);
 
   latex.SetTextAlign(32);
   latex.SetTextColor(kBlack);
@@ -119,7 +120,12 @@ void snowFall(Double_t snow2015 = 102., Int_t nBins = 24)
   latex.DrawLatex(118,17.,text);
 
   latex.SetTextColor(kRed);
-  latex.DrawLatex(118,15.8,"Fit Prob. (G): 72%");
+  sprintf(text,"Fit Prob. (G): %.0f%%",100.*gaussian->GetProb());
+  latex.DrawLatex(118,15.8,text);
+
+  latex.SetTextColor(kRed);
+  latex.SetTextSize(0.06);
+  latex.DrawLatex(110,13,"RECORD !");
 
   cv->SaveAs("snowFallBoston.png");
   

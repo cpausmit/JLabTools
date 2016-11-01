@@ -18,10 +18,12 @@ using namespace std;
 std::vector<double> vVolume; // value of volumes
 std::vector<double> uVolume; // uncertainties of volumes
 
-extern void Fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag);
 void        Init(TString inputFile);
+extern void Fcn(Int_t &nPar, Double_t *gIn, Double_t &f, Double_t *par, Int_t iFlag);
+
 void        FillOneMeasurement(TH1D *h, Double_t mean, Double_t sigma);
 Double_t    CalculateWeightedMean(Bool_t lWidth = kFALSE);
+
 
 void cuboidUnbinnedFit(int nBins=20)
 {
@@ -31,6 +33,7 @@ void cuboidUnbinnedFit(int nBins=20)
   // Read data into our global vectors
   Init(inputFile);
   
+  // setup the minimization engine
   TMinuit *minuit = new TMinuit(1);
   minuit->SetFCN(Fcn);
 
@@ -42,20 +45,19 @@ void cuboidUnbinnedFit(int nBins=20)
 
   minuit->mnexcm("CALL FCN",argList,1,iFlag);
 
+  // ask for no more than 100 iterations
   argList[0] = 100;
+  // ask for full minimazation and analysis of uncertainties
   minuit->mnexcm("MIGRAD", argList,1,iFlag);
   minuit->mnexcm("HESSE",  argList,1,iFlag);
   minuit->mnexcm("MINOS",  argList,1,iFlag);
   
-
-  // Make sure we have the right styles
+  // Make sure we have the right styles for the plot
   MitRootStyle::Init(-1);
 
-  // Display our result as god as we can
+  // Display our result as good as we can
   TH1D *hVolume    = new TH1D("Volume","Cuboid Volume",nBins,2900,3900);
-
   MitRootStyle::InitHist(hVolume,"","",kBlue);
-
   TString titles = TString("; Volume [mm^{3}]") + TString("; Number of Entries");
   hVolume->SetTitle(titles.Data());
   hVolume->SetMarkerSize(1.4);
@@ -67,11 +69,10 @@ void cuboidUnbinnedFit(int nBins=20)
     FillOneMeasurement(hVolume,mean,sigma);
   }
   
-  Double_t mean=CalculateWeightedMean(kFALSE),meanE;
-  //minuit->GetParameter(0,mean,meanE);
-  Double_t sigma=CalculateWeightedMean(kTRUE),sigmaE;
-  //minuit->GetParameter(0,sigma,sigmaE);
-  Double_t norm = double(vVolume.size()) * hVolume->GetBinWidth(0);
+  // Calculate the average values
+  Double_t mean  = CalculateWeightedMean(kFALSE); //minuit->GetParameter(0,mean,meanE);
+  Double_t sigma = CalculateWeightedMean(kTRUE);
+  Double_t norm  = double(vVolume.size()) * hVolume->GetBinWidth(0);
 
   printf(" Normalization:  %f\n",norm);
   printf(" Weighted Mean:  %f\n",mean);
@@ -81,37 +82,17 @@ void cuboidUnbinnedFit(int nBins=20)
   cv->Draw();
   hVolume->Draw("p");
 
-  TF1 *f = new TF1("f",
-		   "[2]/TMath::Sqrt(TMath::TwoPi())/[1]*TMath::Exp((x-[0])*(x-[0])/(-2*[1]*[1]))",
-		   2000,5000);
-  // Initialize function
-  f->SetParameter(0,mean);
-  f->SetParameter(1,sigma);
-  f->SetParameter(2,norm);
-  f->SetLineColor(kRed);
-  f->Draw("same");
-  
-  //  hVolume->Fit("gaus","l");
-//
-//  TF1 *gaussian = hVolume->GetFunction("gaus");
-//  gaussian->SetLineColor(kRed);
-//
-//  Double_t mean = gaussian->GetParameter(1);
-//  Double_t width = gaussian->GetParameter(2);
-//
-//  char text[40];
-//  TLatex latex;
-//  latex.SetTextSize(0.034);
-//  latex.SetTextAlign(32);
-//  latex.SetTextColor(kBlack);
-//  latex.SetTextSize(0.034);
-//
-//  sprintf(text," Mean: %.1f mm^{3}",mean);
-//  latex.DrawLatex(3880,14.6,text);
-//  sprintf(text," Width: %.1f mm^{3}",width);
-//  latex.DrawLatex(3880,14.0,text);
-//
-//  cv->SaveAs("cuboidUnbinned.png");
+//  TF1 *f = new TF1("f",
+//		   "[2]/TMath::Sqrt(TMath::TwoPi())/[1]*TMath::Exp((x-[0])*(x-[0])/(-2*[1]*[1]))",
+//		   2000,5000);
+//  // Initialize function
+//  f->SetParameter(0,mean);
+//  f->SetParameter(1,sigma);
+//  f->SetParameter(2,norm);
+//  f->SetLineColor(kRed);
+//  f->Draw("same");
+
+  cv->SaveAs("cuboidUnbinned.png");
 
 }
 
