@@ -32,12 +32,16 @@ Int_t measureNPhotons(Double_t rate, Double_t interval);
 vector<double> fillObservationTimes(const Int_t nDecays);
 
 void photoElectronExperiment(Int_t    seed         = 46456, // random seed to get different setups
-			     Double_t meanNPhotons = 2.0,   // mean number of photons in interval
+			     Double_t meanNPhotons = 1.8,   // mean number of photons in interval
 			     Double_t interval     = 4.5,   // interval measured in nano seconds
 			     Int_t    nIntervals   = 1000)  // number of intervals to measure photons
 {
   // first we need to setup a very long time interval (compared to the one we measure) and generate
   // the time series of uniformly distributed photons
+
+  printf("\n Number of measurements (intervals): %d\n",nIntervals);
+  printf(" Mean number of photons in interval: %.1f\n",meanNPhotons);
+  printf(" Duration of interval              : %.1f ns\n",interval);
 
   // - rate of photons [1/ns]
   Double_t rate = meanNPhotons/interval;
@@ -83,15 +87,15 @@ void photoElectronExperiment(Int_t    seed         = 46456, // random seed to ge
   // - make sure we have the right styles
   MitRootStyle::Init(-1);
 
-  Int_t nBins = 20;
+  Int_t nBins = meanNPhotons * 6;
 
   // - make the relevant histograms
   TH1D *hFrame = new TH1D("Frame",";Number of Intervals;Number of Photons",1,0.,nBins);
-  MitRootStyle::InitHist(hFrame,"Number of Photon","Number of Intervals",kBlack);  
+  MitRootStyle::InitHist(hFrame,"Number of Photons","Number of Intervals",kBlack);  
   TH1D *hNPhotons = new TH1D("NPhotons",";Number of Intervals;Number of Photons",nBins,-0.5,nBins-0.5);
-  MitRootStyle::InitHist(hNPhotons,"Number of Photon","Number of Intervals",kBlack);  
+  MitRootStyle::InitHist(hNPhotons,"Number of Photons","Number of Intervals",kBlack);  
   TH1D *hNPhotonsP = new TH1D("NPhotonsP",";Number of Intervals;Number of Photons",nBins,-0.5,nBins-0.5);
-  MitRootStyle::InitHist(hNPhotonsP,"Number of Photon","Number of Intervals",kBlack);  
+  MitRootStyle::InitHist(hNPhotonsP,"Number of Photons","Number of Intervals",kBlack);  
 
   for (Int_t i=0; i<nIntervals; i++) {
     // fill relevant histograms
@@ -103,26 +107,31 @@ void photoElectronExperiment(Int_t    seed         = 46456, // random seed to ge
   pois->SetParameters(nIntervals,1.0);
   
   // Make the plot
-  TCanvas *cv = new TCanvas("cv","multipads",800,800);
+  TCanvas *cv = new TCanvas("cv","multipads",1600,1600);
   cv->Divide(1,1,0,0);
   cv->cd(1);
   MitRootStyle::InitSubPad(gPad);
 
-  hFrame->SetMaximum(hNPhotons->GetMaximum()+1.2*TMath::Sqrt(hNPhotons->GetMaximum()));
+  Double_t delta = max(1.2*TMath::Sqrt(hNPhotons->GetMaximum()),0.2*hNPhotons->GetMaximum());
+  hFrame->SetMaximum(hNPhotons->GetMaximum()+delta);
   hFrame->Draw("");
 
   hNPhotons->SetMarkerColor(kBlue);
   hNPhotons->SetMarkerSize(1.6);
+  hNPhotons->SetLineWidth(4.0);
   hNPhotons->Draw("epSame");
   hNPhotons->Fit("gaus");
   hNPhotons->GetFunction("gaus")->SetLineColor(kRed);
-  //cv->cd(2);
-  //MitRootStyle::InitSubPad(gPad);
+  hNPhotons->GetFunction("gaus")->SetLineWidth(4.0);
   hNPhotonsP->SetMarkerColor(kBlue);
   hNPhotonsP->SetMarkerSize(1.6);
+  hNPhotonsP->SetLineWidth(4.0);
   hNPhotonsP->Draw("epSame");
   hNPhotonsP->Fit(pois);
   hNPhotonsP->GetFunction("pois")->SetLineColor(kGreen);
+  hNPhotonsP->GetFunction("pois")->SetLineWidth(4.0);
+
+  
 }
 
 void setupRandom(Int_t seed)
@@ -151,7 +160,7 @@ fillObservationTimes(const Int_t nPhotons)
   // For a given number of photons generate the corresponding times assuming a flat distribution. The
   // time interval is normalized to one, so all values are between 0 and 1.
 
-  printf(" N Photons: %d Generate and sort\n",nPhotons);
+  printf("\n N Photons: %d (generate and sort)\n",nPhotons);
 
   vector<double> x;
   for (Int_t i=0; i<nPhotons; i++) {
@@ -161,7 +170,7 @@ fillObservationTimes(const Int_t nPhotons)
     x.insert(it,r);
   }
 
-  printf(" N Photons: %d DONE\n",nPhotons);
+  printf(" N Photons: %d -- DONE\n\n",nPhotons);
 
   return x;
 }
