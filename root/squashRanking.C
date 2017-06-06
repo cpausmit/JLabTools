@@ -94,7 +94,7 @@ void squashRanking()
   // Make sure we have the right styles
   MitRootStyle::Init(-1);
   
-  TCanvas *cv = new TCanvas();
+  TCanvas *cv = new TCanvas("CV","CV",0,0,1200,1200);
   cv->Draw();
 
   Double_t xDel = (xMax-xMin)/20.;
