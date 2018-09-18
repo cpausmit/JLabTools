@@ -29,6 +29,7 @@ void squashRanking()
   printf(" Input file: %s\n",inputFile.Data());
   ifstream input(inputFile.Data());
 
+
   // #2013-2014 	2014-01-08 	Adult M 3.5 	192 	0 	3.9 	0 	US SQUASH
   TString  name,s;
   TString  season,date,age,gender,country,sport;
@@ -119,7 +120,7 @@ void squashRanking()
   graph->Draw("LP"); 
 
   // make a png file to save this plot
-  cv->SaveAs("rating.png");
+  cv->SaveAs("../pics/rating.png");
   
   return;
 }

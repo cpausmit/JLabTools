@@ -114,5 +114,5 @@ void cuboid(int nBins=20)
   sprintf(text," Width: %.1f mm^{3}",width);
   latex.DrawLatex(3880,14.0,text);
 
-  cv->SaveAs("cuboid.png");
+  cv->SaveAs("../pics/cuboid.png");
 }
