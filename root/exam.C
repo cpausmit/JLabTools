@@ -115,5 +115,5 @@ void exam(int nBins=50)
 //  sprintf(text," Width: %.1f mm^{3}",width);
 //  latex.DrawLatex(3880,14.0,text);
 
-  cv->SaveAs("grades.png");
+  cv->SaveAs("../pics/grades.png");
 }

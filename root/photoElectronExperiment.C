@@ -154,8 +154,8 @@ void photoElectronExperiment(Int_t    seed         = 46456, // random seed to ge
   hDeltaT->SetLineWidth(4.0);
 
   // Legend
-  TLegend* l = new TLegend(0.65,0.85,0.90,0.94);
-  l->SetTextSize(0.03);
+  TLegend* l = new TLegend(0.70,0.80,0.90,0.94);
+  l->SetTextSize(0.05);
   l->SetFillColor(kWhite);
   l->SetBorderSize(0);
   l->AddEntry(hNPhotons,text,"p");
@@ -163,7 +163,7 @@ void photoElectronExperiment(Int_t    seed         = 46456, // random seed to ge
   l->AddEntry(poisson,"Poisson","l");
   
   // Create a canvas
-  TCanvas *cv = new TCanvas("cv","multipads",2000,1400);
+  TCanvas *cv = new TCanvas("cv","multipads",2000,1100);
   cv->Divide(2,2,0,0);
 
   // Make plot 1
@@ -180,6 +180,7 @@ void photoElectronExperiment(Int_t    seed         = 46456, // random seed to ge
   gauss->Draw("Same");
   poisson->Draw("Same");
 
+  
   // Add legend
   l->Draw();
 
@@ -214,6 +215,12 @@ void photoElectronExperiment(Int_t    seed         = 46456, // random seed to ge
   gPad->SetLogy(1);
 
   hDeltaT->Draw("e");  
+
+  printf("\n");
+  printf(" Mean(Poisson): %5.3f +- %5.3f\n",poisson->GetParameter(1),poisson->GetParError(1));
+  printf(" Mean(Gauss)  : %5.3f +- %5.3f\n",gauss->GetParameter(1),gauss->GetParError(1));
+  printf("\n");
+
 }
 
 void setupRandom(Int_t seed)
@@ -241,7 +248,7 @@ fillObservationTimes(const Int_t nPhotons)
 {
   // For a given number of photons generate the corresponding times assuming a flat
   // distribution. The time interval is normalized to one, so all values are between 0 and 1. For
-  // ease of later used the times are in ascending order, which takes same time.
+  // ease of later use the times are in ascending order, which takes same time.
 
   printf("\n N Photons: %d (generate and sort)\n",nPhotons);
 

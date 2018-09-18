@@ -127,7 +127,7 @@ void snowFall(Double_t snow2015 = 108.6, Int_t nBins = 24)
   latex.SetTextSize(0.06);
   latex.DrawLatex(110,13,"RECORD !");
 
-  cv->SaveAs("snowFallBoston.png");
+  cv->SaveAs("../pics/snowFallBoston.png");
   
   return;
 }

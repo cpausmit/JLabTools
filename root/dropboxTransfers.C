@@ -121,7 +121,7 @@ void dropboxTransfers(Int_t nBins = 24)
   graph->Draw("LP"); 
 
   // make a png file to save this plot
-  cv->SaveAs("rate.png");
+  cv->SaveAs("../pics/rate.png");
   
   return;
 }
