@@ -1,3 +1,7 @@
+#include <TCanvas.h>
+#include <TRandom.h>
+#include <TH1D.h>
+
 void cuboidGenerateData(Int_t    seed   = 456456,
 			Int_t    nDraws = 49,
 			Double_t mean   = 3400,
