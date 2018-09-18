@@ -92,7 +92,7 @@ void cuboidUnbinnedFit(int nBins=20)
 //  f->SetLineColor(kRed);
 //  f->Draw("same");
 
-  cv->SaveAs("cuboidUnbinned.png");
+  cv->SaveAs("../pics/cuboidUnbinned.png");
 
 }
 

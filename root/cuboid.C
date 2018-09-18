@@ -40,7 +40,6 @@ void cuboid(int nBins=20)
     // read in
     input >> name >> idx >> x >> dx >> y >> dy >> z >> dz >> v >> dv;
 
-
     // show what we are reading
     if (nLines < 4)
       printf(" name=%s, v=%8f dv=%8f\n",name.Data(),v,dv);
@@ -86,5 +85,5 @@ void cuboid(int nBins=20)
   sprintf(text," Width: %.1f mm^{3}",width);
   latex.DrawLatex(3880,14.0,text);
 
-  cv->SaveAs("cuboid.png");
+  cv->SaveAs("../pics/cuboid.png");
 }

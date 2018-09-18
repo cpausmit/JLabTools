@@ -120,7 +120,7 @@ void squashRanking()
   graph->Draw("LP"); 
 
   // make a png file to save this plot
-  cv->SaveAs("rating.png");
+  cv->SaveAs("../pics/rating.png");
   
   return;
 }
