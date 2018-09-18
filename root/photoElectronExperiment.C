@@ -34,9 +34,9 @@ Int_t measureNPhotons(Double_t rate, Double_t interval);
 vector<double> fillObservationTimes(const Int_t nDecays);
 
 void photoElectronExperiment(Int_t    seed         = 46456, // random seed to get different setups
-			     Double_t meanNPhotons = 3.0,   // mean number of photons in interval
+			     Double_t meanNPhotons = 1.2,   // mean number of photons in interval
 			     Double_t interval     = 4.5,   // interval measured in nano seconds
-			     Int_t    nIntervals   = 10000) // number of intervals to measure photons
+			     Int_t    nIntervals   = 100)   // number of intervals to measure photons
 {
   // first we need to setup a very long time interval (compared to the one we measure) and generate
   // the time series of uniformly distributed photons
@@ -142,6 +142,8 @@ void photoElectronExperiment(Int_t    seed         = 46456, // random seed to ge
   hDeltaT->GetFunction("expo")->SetLineColor(kRed);
   hDeltaT->GetFunction("expo")->SetLineWidth(4.0);
 
+  hDeltaT->Draw("h");
+  
   // Define all styles
   hNPhotons->SetMarkerColor(kBlue);
   hNPhotons->SetMarkerSize(1.6);
@@ -245,7 +247,7 @@ fillObservationTimes(const Int_t nPhotons)
 
   vector<double> x;
   for (Int_t i=0; i<nPhotons; i++) {
-    Double_t r = gRandom->Uniform();
+    Double_t r = gRandom->Uniform(1);
     // this is not the fastest way to do it
     dbls::iterator it = std::lower_bound(x.begin(),x.end(),r);
     x.insert(it,r);
