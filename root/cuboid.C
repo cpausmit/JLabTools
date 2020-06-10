@@ -12,10 +12,18 @@
 
 using namespace std;
 
+Bool_t gCleanup = false;
+
 void cuboid(int nBins=20)
 {
-  TString inputFile = TString("../data/cuboidData.dat");
+  //TString inputFile = TString("../data/cuboidData.dat");
   //TString inputFile = TString("../data/cuboidDataS2015.dat");
+  //TString inputFile = TString("../data/cuboidDataF2018B1.dat");
+  //TString inputFile = TString("../data/cuboidDataF2018B2.dat");
+  //TString inputFile = TString("../data/cuboidDataF2018B3.dat");
+  //TString inputFile = TString("../data/cuboidDataF2018B4.dat");
+  //TString inputFile = TString("../data/cuboidDataF2019B2.dat");
+  TString inputFile = TString("../data/cuboidDataF2019B02.dat");
 
   // Now open our input
   printf(" Input file: %s\n",inputFile.Data());
@@ -27,13 +35,29 @@ void cuboid(int nBins=20)
   Int_t    idx=0,nLines=0;
   Double_t x,dx,y,dy,z,dz,v,dv;
 
-  TH1D *hVolume    = new TH1D("Volume","Cuboid Volume",nBins,2900,3900);
+  TH1D *hV = new TH1D("V","Cuboid V [mm^{3}]",nBins,2900,3900);
+  TH1D *hX = new TH1D("x","Cuboid x [mm]",nBins,8.5,10.5);
+  TH1D *hY = new TH1D("y","Cuboid y [mm]",nBins,8.7,11);
+  TH1D *hZ = new TH1D("z","Cuboid z [mm]",nBins,34,40);
 
-  MitRootStyle::InitHist(hVolume,"","",kBlue);
+  // create histograms
+  TH1D *h[4];
+  h[0] = hX; 
+  h[1] = hY; 
+  h[2] = hZ; 
+  h[3] = hV; 
 
-  TString titles = TString("; Volume [mm^{3}]") + TString("; Number of Entries");
-  hVolume->SetTitle(titles.Data());
-  hVolume->SetMarkerSize(1.4);
+  // Define working histogram
+  TH1D* hist = h[3];
+  TString titles = TString("; ") + TString(hist->GetTitle()) + TString("; Number of Entries");
+  
+  // Make sure we have the right styles
+  MitRootStyle::Init(0);
+  MitRootStyle::InitHist(hist,"","",kBlue);
+
+  printf(" Title: %s\n",titles.Data());
+  hist->SetTitle(titles.Data());
+  hist->SetMarkerSize(1.4);
 
   while (1) {
 
@@ -41,33 +65,40 @@ void cuboid(int nBins=20)
     input >> name >> idx >> x >> dx >> y >> dy >> z >> dz >> v >> dv;
 
     // show what we are reading
-    if (nLines < 4)
+    if (nLines < 20)
       printf(" name=%s, v=%8f dv=%8f\n",name.Data(),v,dv);
 
     // check it worked
     if (! input.good())
       break;
 
-    if (z<34) {
+    if (gCleanup && z<34) {
       printf(" Rejected measurement (z): %f\n",z);
       continue;
     }
-      
-    hVolume->Fill(v);
+
+    printf("Volume: %f\n",v);
+    hV->Fill(v);
+    hX->Fill(x);
+    hY->Fill(y);
+    hZ->Fill(z);
 
     nLines++;
   }
   input.close();
 
-  // Make sure we have the right styles
-  MitRootStyle::Init(-1);
-
-  TCanvas *cv = new TCanvas();
+  printf(" Number of lines: %d\n",nLines);
+  
+  TCanvas *cv = MitRootStyle::MakeCanvas("canvas","cuboid");
   cv->Draw();
-  hVolume->Draw("e");
-  hVolume->Fit("gaus","l");
 
-  TF1 *gaussian = hVolume->GetFunction("gaus");
+  gStyle->SetOptStat(1110010);
+
+  hist->Draw("e");
+  hist->Fit("gaus","l");
+
+  hist->Draw("e");
+  TF1 *gaussian = hist->GetFunction("gaus");
   gaussian->SetLineColor(kRed);
 
   Double_t mean = gaussian->GetParameter(1);

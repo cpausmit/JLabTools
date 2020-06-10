@@ -66,26 +66,28 @@ void squashRanking()
 
   input.open(inputFile.Data());
   while (! input.eof()) {
-
-    // read in
-    input >> season >> date >> age >> gender >> pClass >> rank >> fake0 >> rating >> fake1 >> country >> sport;
-
-    xVals[nLines] = getSeconds(date.Data()) / 1000000.;
-    yVals[nLines] = rating;
-    printf(" X: %f Y: %f\n",xVals[nLines],yVals[nLines]);
-
-    if (xVals[nLines] < xMin)
-      xMin = xVals[nLines];
-    if (xVals[nLines] > xMax)
-      xMax = xVals[nLines];
-    if (yVals[nLines] > max)
-      max = yVals[nLines];
     
     // check if we are at the end
     if (input.eof()) {
       printf(" INFO - we are through this file (%d).\n",nLines);
       break;
     }
+
+    // read in
+    input >> season >> date >> age >> gender >> pClass >> rank >> fake0 >> rating >> fake1 >> country >> sport;
+
+    xVals[nLines] = getSeconds(date.Data()) / 1000000.;
+    yVals[nLines] = rating;
+    if (nLines==0)
+      printf(" X: %f Y: %f\n",xVals[nLines],yVals[nLines]);
+    
+    if (xVals[nLines] < xMin)
+      xMin = xVals[nLines];
+    if (xVals[nLines] > xMax)
+      xMax = xVals[nLines];
+    if (yVals[nLines] > max)
+      max = yVals[nLines];
+
     nLines++;
   }
   input.close();
@@ -99,6 +101,7 @@ void squashRanking()
   cv->Draw();
 
   Double_t xDel = (xMax-xMin)/20.;
+  printf(" X(min,max,delta): %f, %f, %f\n",xMin,xMax,xDel);
   TH1D *hRating = new TH1D("Rating","Rating",10,xMin-xDel,xMax+xDel);
   hRating->SetMaximum(max*1.1);
   hRating->SetMinimum(min);
@@ -108,14 +111,23 @@ void squashRanking()
   hRating->SetTitle(titles.Data());
   hRating->SetMarkerSize(1.4);
   hRating->Draw();
+
+  printf(" %f %f\n",xVals[0],yVals[0]);
   
-  TGraph* graph = new TGraph(numVals-1,xVals,yVals);
+  // WHAT ????
+  xVals[0] = xVals[1];
+
+  TGraph* graph = new TGraph(numVals,xVals,yVals);
   graph->SetLineColor(2);
-  graph->SetLineWidth(2);
+  graph->SetLineWidth(4);
   graph->SetMarkerColor(4);
   graph->SetMarkerStyle(21);
-  graph->SetMarkerSize(0.4);
+  graph->SetMarkerSize(0.8);
 
+  //for (int i=0; i<numVals; i++) {
+  //  printf("[%3d]  X: %f  Y: %f\n",i,xVals[i],yVals[i]);
+  //}
+  
   //graph->Draw(); 
   graph->Draw("LP"); 
 
