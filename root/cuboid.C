@@ -89,9 +89,11 @@ void cuboid(int nBins=20)
 
   printf(" Number of lines: %d\n",nLines);
   
-  TCanvas *cv = MitRootStyle::MakeCanvas("canvas","cuboid");
-  cv->Draw();
+  // Make sure we have the right styles
+  MitRootStyle::Init(-1);
 
+  TCanvas *cv = new TCanvas();
+  cv->Draw();
   gStyle->SetOptStat(1110010);
 
   hist->Draw("e");
