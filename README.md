@@ -42,4 +42,4 @@ Make the cuboid plot for Junior Lab.
 Make a plot of some quantity versus some variable:
 
 * cd JLabTools/root/
-* root -l plotxy.C+
+* root -l ./plotxy.C+
