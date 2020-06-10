@@ -1,0 +1,24 @@
+# not sure what that is used for ....
+Gui.DefaultFont:          -*-helvetica-medium-r-*-*-24-*-*-*-*-*-iso8859-1
+# menu on top and dropdowns
+Gui.MenuFont:             -*-helvetica-medium-r-*-*-24-*-*-*-*-*-iso8859-1
+Gui.MenuHiFont:           -*-helvetica-bold-r-*-*-24-*-*-*-*-*-iso8859-1
+Gui.DocFixedFont:         -*-courier-medium-r-*-*-24-*-*-*-*-*-iso8859-1
+Gui.DocPropFont:          -*-helvetica-medium-r-*-*-24-*-*-*-*-*-iso8859-1
+# the font at the side of the icons (dirs etc. etc.
+Gui.IconFont:             -*-helvetica-medium-r-*-*-24-*-*-*-*-*-iso8859-1
+# the font appearing to show pointer position etc.
+Gui.StatusFont:           -*-helvetica-medium-r-*-*-24-*-*-*-*-*-iso8859-1
+
+## Root init files
+#Rint.Load:                  .rootalias.C
+Rint.Logon:                 rootlogon.C
+#Rint.Logoff:                .rootlogoff.C
+# Activate memory statistics
+Rint.Root.MemStat:          0
+# Graphics options
+Rint.Canvas.MoveOpaque:     false
+Rint.Canvas.HighlightColor: 5
+## Path used by dynamic loader to find shared libraries and macros
+#Unix.*.Root.DynamicPath: .:$CMSSW_BASE/src/MitAna/macros:$CMSSW_BASE/src/MitExample/macros
+#Unix.*.Root.MacroPath:   .:$CMSSW_BASE/src/MitAna/macros:$CMSSW_BASE/src/MitExample/macros

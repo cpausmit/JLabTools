@@ -89,9 +89,6 @@ void cuboid(int nBins=20)
 
   printf(" Number of lines: %d\n",nLines);
   
-  // Make sure we have the right styles
-  MitRootStyle::Init(-1);
-
   TCanvas *cv = new TCanvas();
   cv->Draw();
   gStyle->SetOptStat(1110010);
@@ -99,6 +96,7 @@ void cuboid(int nBins=20)
   hist->Draw("e");
   hist->Fit("gaus","l");
 
+  hist->SetNdivisions(505);
   hist->Draw("e");
   TF1 *gaussian = hist->GetFunction("gaus");
   gaussian->SetLineColor(kRed);

@@ -28,8 +28,14 @@ root runs on all major operating systems like Linux/Windows/iOS.
 * cd MitRootStyle; ./install.sh; source setup.sh; cd ..
 * git clone https://github.com/cpausmit/JLabTools
 
+* *CAREFUL*: you always have to setup MitRootStyle before using root. Do
+  _source MitRootStyle/setup.sh_
+
 ## Examples
 
 * cd JLabTools/root/
-* root -l ./cubiod.C+
-* root -l ./cubiodUnbinned.C+
+* root -l ./cuboid.C+
+* root -l ./cuboidUnbinned.C+
+
+* cd JLabTools/root/
+* root -l plotxy.C+
