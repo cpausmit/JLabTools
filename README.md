@@ -33,9 +33,13 @@ root runs on all major operating systems like Linux/Windows/iOS.
 
 ## Examples
 
+Make the cuboid plot for Junior Lab.
+
 * cd JLabTools/root/
 * root -l ./cuboid.C+
 * root -l ./cuboidUnbinned.C+
+
+Make a plot of some quantity versus some variable:
 
 * cd JLabTools/root/
 * root -l plotxy.C+
